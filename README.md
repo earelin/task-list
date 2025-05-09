@@ -1,3 +1,3 @@
-# task-list
+# Task List
 
-Prototipe for a Spring Boot application that manages a list of tasks.
+Prototype for a Spring Boot application that manages a list of tasks.
