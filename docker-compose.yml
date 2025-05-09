@@ -1,0 +1,64 @@
+services:
+  app:
+    image: task-list
+    container_name: app
+    build:
+      context: app
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - prometheus
+      - jaeger
+    environment:
+      MANAGEMENT_OTLP_TRACING_ENDPOINT: http://jaeger:4317
+      SPRING_PROFILES_ACTIVE: local
+    profiles:
+      - run-app
+
+  mongodb:
+    image: mongo:8.0.9
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_PASSWORD: secret
+      MONGO_INITDB_ROOT_USERNAME: root
+    ports:
+      - "27017:27017"
+
+  prometheus:
+    image: prom/prometheus:v3.3.0
+    container_name: prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--log.level=debug"
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/docker-compose/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:11.6.1
+    container_name: grafana
+    depends_on:
+      - prometheus
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./config/docker-compose/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+      - grafana-data:/var/lib/grafana
+
+  jaeger:
+    image: jaegertracing/jaeger:2.5.0
+    container_name: jaeger
+    environment:
+      COLLECTOR_OTLP_ENABLED: true
+      SPAN_STORAGE_TYPE: memory
+    ports:
+      - "16686:16686"
+      - "4317:4317"
+      - "4318:4318"
+
+volumes:
+  grafana-data:
+  prometheus-data:
