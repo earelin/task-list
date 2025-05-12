@@ -11,6 +11,6 @@ resource "docker_image" "task-list" {
   name = "task-list"
   build {
     context = "../../app"
-    tag     = ["task-list:latest"]
+    tag     = ["task-list:${var.app_version}"]
   }
 }

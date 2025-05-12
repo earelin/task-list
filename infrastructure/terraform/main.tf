@@ -13,15 +13,31 @@ module "mongodb" {
   namespace = var.namespace
 }
 
-module "app" {
-  source    = "./modules/app"
+module "jaeger" {
+  source    = "./modules/jaeger"
   namespace = var.namespace
+}
+
+module "prometheus" {
+  source    = "./modules/prometheus"
+  namespace = var.namespace
+}
+
+module "elk" {
+  source    = "./modules/elk"
+  namespace = var.namespace
+}
+
+module "app" {
+  source      = "./modules/app"
+  namespace   = var.namespace
+  app_version = var.app_version
 }
 
 resource "kubernetes_storage_class_v1" "local-storage-retain" {
   metadata {
     name = "local-storage-retain-class"
   }
-  reclaim_policy = "Retain"
+  # reclaim_policy = "Retain"
   storage_provisioner = "k8s.io/minikube-hostpath"
 }

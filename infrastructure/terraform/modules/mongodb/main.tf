@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "~> 2.36.0"
-    }
-  }
-}
-
 resource "kubernetes_stateful_set_v1" "mongodb" {
   metadata {
     name      = "mongodb"
@@ -27,15 +18,18 @@ resource "kubernetes_stateful_set_v1" "mongodb" {
       }
       spec {
         container {
-          image = "mongo:8.0.9"
+          image = "mongo:${local.mongodb_version}"
           name  = "mongo"
           env {
-            name  = "MONGO_INITDB_ROOT_USERNAME"
+            name = "MONGO_INITDB_ROOT_USERNAME"
             value = "root"
           }
           env {
-            name  = "MONGO_INITDB_ROOT_PASSWORD"
-            value = "secret"
+            name = "MONGO_INITDB_ROOT_PASSWORD"
+            value = random_password.mongodb-password.result
+          }
+          port {
+            container_port = 27017
           }
           volume_mount {
             mount_path = "/data/db"
@@ -47,16 +41,23 @@ resource "kubernetes_stateful_set_v1" "mongodb" {
           image = "mongo-express:1.0.2-20-alpine3.19"
           name  = "mongo-express"
           env {
-            name  = "ME_CONFIG_MONGODB_ADMINUSERNAME"
+            name = "ME_CONFIG_MONGODB_ADMINUSERNAME"
             value = "root"
           }
           env {
-            name  = "ME_CONFIG_MONGODB_ADMINPASSWORD"
-            value = "secret"
+            name = "ME_CONFIG_MONGODB_ADMINPASSWORD"
+            value = random_password.mongodb-password.result
           }
           env {
             name  = "ME_CONFIG_MONGODB_SERVER"
             value = "localhost"
+          }
+          env {
+            name  = "ME_CONFIG_BASICAUTH"
+            value = "false"
+          }
+          port {
+            container_port = 8081
           }
         }
 
@@ -79,11 +80,17 @@ resource "kubernetes_service_v1" "mongodb" {
   }
   spec {
     selector = {
-      app = "mongo-express"
+      app = "mongodb"
     }
     port {
+      name        = "mongodb"
       port        = 27017
       target_port = 27017
+    }
+    port {
+      name        = "mongo-express"
+      port        = 8081
+      target_port = 8081
     }
     type = "NodePort"
   }
@@ -103,4 +110,12 @@ resource "kubernetes_persistent_volume_claim_v1" "mongodb" {
     }
     storage_class_name = var.storage-class
   }
+}
+
+resource "random_password" "mongodb-password" {
+  length  = 20
+  special = false
+  upper   = true
+  lower   = true
+  numeric = true
 }

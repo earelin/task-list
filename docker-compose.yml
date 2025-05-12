@@ -26,12 +26,11 @@ services:
       - "27017:27017"
 
   prometheus:
-    image: prom/prometheus:v3.3.0
+    image: prom/prometheus:v3.3.1
     container_name: prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--storage.tsdb.path=/prometheus"
-      - "--log.level=debug"
     ports:
       - "9090:9090"
     volumes:
@@ -49,7 +48,7 @@ services:
       - grafana-data:/var/lib/grafana
 
   jaeger:
-    image: jaegertracing/jaeger:2.5.0
+    image: jaegertracing/jaeger:2.6.0
     container_name: jaeger
     environment:
       COLLECTOR_OTLP_ENABLED: true
