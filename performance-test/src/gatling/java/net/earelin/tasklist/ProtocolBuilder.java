@@ -16,7 +16,5 @@ public final class ProtocolBuilder {
     return isNotBlank(baseUrlEnv) ? baseUrlEnv : "http://localhost:8080";
   }
 
-  private ProtocolBuilder() {
-    // Private constructor to prevent instantiation
-  }
+  private ProtocolBuilder() {}
 }

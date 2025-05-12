@@ -47,7 +47,7 @@ public final class ScenariosBuilder {
           "tag-description", faker.lorem().sentence(5)
       )).iterator();
 
-  public static final ScenarioBuilder taskList = scenario("Task List")
+  public static final ScenarioBuilder taskListUserJourney = scenario("Task List")
       .exec(feed(userFeeder), createUserAccount())
       .pause(20, 30)
       .exec(getAllTaskLists())
@@ -55,6 +55,8 @@ public final class ScenariosBuilder {
       .exec(feed(taskListFeeder), createTaskList())
       .pause(10, 20)
       .exec(getAllTaskLists())
+      .pause(1, 5)
+      .exec(getTaskList())
       .pause(10, 20)
       .exec(feed(taskFeeder), createTask())
       .pause(10, 20)
@@ -65,6 +67,13 @@ public final class ScenariosBuilder {
       .exec(feed(taskFeeder), createTask())
       .pause(5, 20)
       .exec(removeTask());
+
+  private static Executable getTaskList() {
+    return http("Get Task List")
+        .get("/task-lists/#{task-list-id}")
+        .basicAuth("#{email}", "#{password}")
+        .check(status().is(200));
+  }
 
   private static Executable removeTask() {
     return http("Remove Task")
@@ -148,11 +157,11 @@ public final class ScenariosBuilder {
         .basicAuth("#{email}", "#{password}")
         .body(StringBody(
             """
-                {
-                  "name": "#{task-list-name}",
-                  "description": "#{task-list-description}"
-                }
-                """))
+            {
+              "name": "#{task-list-name}",
+              "description": "#{task-list-description}"
+            }
+            """))
         .asJson()
         .check(status().is(201))
         .check(jmesPath("id").saveAs("task-list-id"));
