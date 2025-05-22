@@ -1,4 +1,4 @@
-variable "app_enviroment" {
+variable "enviroment" {
   type    = string
   default = "dev"
 }

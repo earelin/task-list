@@ -40,3 +40,6 @@ build/
 *.tfstate
 *.tfstate.*
 .terraform/
+
+# Terragrunt
+*.terragrunt-cache/
