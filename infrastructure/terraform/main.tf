@@ -2,36 +2,37 @@ terraform {
   required_version = ">= 1.11.0"
 }
 
-resource "kubernetes_namespace_v1" "task-list" {
+resource "kubernetes_namespace_v1" "app_namespace" {
   metadata {
-    name = var.namespace
+    name = "task-list-${var.app_enviroment}"
   }
-}
-
-module "mongodb" {
-  source    = "./modules/mongodb"
-  namespace = var.namespace
-}
-
-module "jaeger" {
-  source    = "./modules/jaeger"
-  namespace = var.namespace
-}
-
-module "prometheus" {
-  source    = "./modules/prometheus"
-  namespace = var.namespace
-}
-
-module "elk" {
-  source    = "./modules/elk"
-  namespace = var.namespace
 }
 
 module "app" {
   source      = "./modules/app"
-  namespace   = var.namespace
+  namespace   = local.app_namespace_name
   app_version = var.app_version
+}
+
+module "mongodb" {
+  source    = "./modules/mongodb"
+  namespace = local.app_namespace_name
+}
+
+resource "kubernetes_namespace_v1" "common_namespace" {
+  metadata {
+    name = local.common_namespace_name
+  }
+}
+
+module "jaeger" {
+  source    = "./modules/jaeger"
+  namespace = local.common_namespace_name
+}
+
+module "prometheus" {
+  source    = "./modules/prometheus"
+  namespace = local.common_namespace_name
 }
 
 resource "kubernetes_storage_class_v1" "local-storage-retain" {

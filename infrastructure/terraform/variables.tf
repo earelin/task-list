@@ -1,6 +1,6 @@
-variable "namespace" {
+variable "app_enviroment" {
   type    = string
-  default = "task-list"
+  default = "dev"
 }
 
 variable "app_version" {
