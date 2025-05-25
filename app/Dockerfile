@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21.0.7_6-jdk AS builder
+FROM eclipse-temurin:17.0.15_6-jdk AS builder
 
 WORKDIR /application
 
@@ -9,7 +9,7 @@ RUN java -Djarmode=layertools -jar application.jar extract \
     && rm application.jar
 
 
-FROM eclipse-temurin:21.0.7_6-jre AS runtime
+FROM eclipse-temurin:17.0.15_6-jre AS runtime
 
 WORKDIR /application
 
