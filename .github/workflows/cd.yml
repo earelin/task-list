@@ -58,6 +58,7 @@ jobs:
         uses: snyk/actions/gradle-jdk17@master
         continue-on-error: true
         env:
+          DEBUG: "*snyk*"
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --all-projects
