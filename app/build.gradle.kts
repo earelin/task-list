@@ -1,15 +1,15 @@
 plugins {
 	jacoco
 	id("task-list-java-conventions")
-	id("org.springframework.boot") version "3.4.5"
+	id("org.springframework.boot") version "3.5.0"
 	id("io.spring.dependency-management") version "1.1.7"
-	id("org.sonarqube") version "6.2.0.5505"
 }
 
 group = "net.earelin"
 version = "0.0.1-SNAPSHOT"
 
 val caffeineVersion: String by extra
+val logbackClassicVersion: String by extra
 val logstashLogbackEncoderVersion: String by extra
 val lombokMapstructVersion: String by extra
 val mapstructSpringExtensionsVersion: String by extra
@@ -46,7 +46,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 
-	runtimeOnly("ch.qos.logback:logback-classic:1.5.18")
+	runtimeOnly("ch.qos.logback:logback-classic:${logbackClassicVersion}")
 	runtimeOnly("net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoderVersion}")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
