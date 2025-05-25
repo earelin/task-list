@@ -1,7 +1,6 @@
 services:
   app:
     image: task-list
-    container_name: app
     build:
       context: app
       dockerfile: Dockerfile
@@ -18,7 +17,6 @@ services:
 
   mongodb:
     image: mongo:8.0.9
-    container_name: mongodb
     environment:
       MONGO_INITDB_ROOT_PASSWORD: secret
       MONGO_INITDB_ROOT_USERNAME: root
@@ -27,7 +25,6 @@ services:
 
   prometheus:
     image: prom/prometheus:v3.3.1
-    container_name: prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--storage.tsdb.path=/prometheus"
@@ -38,7 +35,6 @@ services:
 
   grafana:
     image: grafana/grafana:11.6.1
-    container_name: grafana
     depends_on:
       - prometheus
     ports:
@@ -49,7 +45,6 @@ services:
 
   jaeger:
     image: jaegertracing/jaeger:2.6.0
-    container_name: jaeger
     environment:
       COLLECTOR_OTLP_ENABLED: true
       SPAN_STORAGE_TYPE: memory

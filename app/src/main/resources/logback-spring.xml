@@ -54,14 +54,12 @@
         </encoder>
     </appender>
 
-    <springProfile name="local">
-        <root level="INFO">
-            <appender-ref ref="CONSOLE"/>
-        </root>
-    </springProfile>
-    <springProfile name="!local">
+    <springProfile name="dev | prod">
         <root level="INFO">
             <appender-ref ref="CONSOLE_GCP"/>
         </root>
     </springProfile>
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
 </configuration>
