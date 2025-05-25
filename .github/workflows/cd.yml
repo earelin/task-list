@@ -38,3 +38,5 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./gradlew sonar --info
+      - name: Acceptance tests
+        run: ./gradlew cucumber --info

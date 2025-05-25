@@ -2,13 +2,21 @@ services:
   app:
     build:
       context: app
-    ports:
-      - "8080:8080"
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
     environment:
       MANAGEMENT_OTLP_TRACING_ENDPOINT: http://jaeger:4317
+      SPRING_DATA_MONGODB_HOST: mongodb
       SPRING_PROFILES_ACTIVE: local
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
+      interval: 30s
+      retries: 5
+      start_period: 5s
+      timeout: 10s
+    ports:
+      - "8080:8080"
     profiles:
       - run-app
 
@@ -17,6 +25,12 @@ services:
     environment:
       MONGO_INITDB_ROOT_PASSWORD: secret
       MONGO_INITDB_ROOT_USERNAME: root
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh mongodb://root:secret@localhost:27017/?authSource=admin --quiet
+      interval: 30s
+      retries: 5
+      start_period: 5s
+      timeout: 10s
     ports:
       - "27017:27017"
 
