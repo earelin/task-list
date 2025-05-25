@@ -9,12 +9,12 @@ resource "kubernetes_namespace_v1" "common_namespace" {
 }
 
 module "jaeger" {
-  source    = "./modules/jaeger"
+  source    = "modules/jaeger"
   namespace = local.common_namespace_name
 }
 
 module "prometheus" {
-  source    = "./modules/prometheus"
+  source    = "modules/prometheus"
   namespace = local.common_namespace_name
 }
 

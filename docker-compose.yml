@@ -1,14 +1,11 @@
 services:
   app:
-    image: task-list
     build:
       context: app
-      dockerfile: Dockerfile
     ports:
       - "8080:8080"
     depends_on:
-      - prometheus
-      - jaeger
+      - mongodb
     environment:
       MANAGEMENT_OTLP_TRACING_ENDPOINT: http://jaeger:4317
       SPRING_PROFILES_ACTIVE: local

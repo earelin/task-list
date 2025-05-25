@@ -9,13 +9,13 @@ resource "kubernetes_namespace_v1" "app_namespace" {
 }
 
 module "app" {
-  source      = "./modules/app"
+  source      = "modules/app"
   namespace   = local.app_namespace_name
   app_version = var.app_version
 }
 
 module "mongodb" {
-  source    = "./modules/mongodb"
+  source    = "modules/mongodb"
   namespace = local.app_namespace_name
 }
 
