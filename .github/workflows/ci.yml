@@ -29,12 +29,12 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
       - name: Build
-        run: ./gradlew :app:build
+        run: ./gradlew build
       - name: Run docker compose
         uses: hoverkraft-tech/compose-action@v2.2.0
       - name: Integration tests
-        run: ./gradlew :app:integrationTest
+        run: ./gradlew integrationTest
       - name: SonarQube analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew :app:sonar
+        run: ./gradlew sonar
