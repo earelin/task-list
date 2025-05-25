@@ -1,15 +1,23 @@
 package net.earelin.tasklist.application.rest.user;
 
-import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.not;
+import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 
-import io.restassured.RestAssured;
+import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import net.earelin.tasklist.domain.user.UserRepository;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class UserControllerTest {
 
   private static final String EMAIL = "john.smith@example.com";
@@ -17,25 +25,26 @@ public class UserControllerTest {
   private static final String NAME = "John";
   private static final String SURNAME = "Smith";
 
-//  @MockitoBean
-//  private UserRepository userRepository;
+  @MockitoBean
+  private UserRepository userRepository;
 
-  @LocalServerPort
-  private int port;
+  @Autowired
+  private MockMvc mockMvc;
 
   @BeforeEach
   void setUp() {
-    RestAssured.port = port;
+    RestAssuredMockMvc.mockMvc(mockMvc);
   }
 
   @Test
   void create_user() {
-    given()
+    RestAssuredMockMvc.given()
+        .contentType("application/json")
         .body(
           """
           {
             "email": "%s",
-            "name": "%s",
+            "firstname": "%s",
             "surname": "%s",
             "password": "%s"
           }
@@ -43,6 +52,19 @@ public class UserControllerTest {
     .when()
         .post("/users")
     .then()
-        .statusCode(201);
+        .statusCode(201)
+        .body("email", equalTo(EMAIL))
+        .body("firstname", equalTo(NAME))
+        .body("surname", equalTo(SURNAME))
+        .body("$", not(hasKey("password")));
+
+    verify(userRepository).save(
+        org.mockito.ArgumentMatchers.argThat(user ->
+            user.getEmail().equals(EMAIL) &&
+            user.getFirstname().equals(NAME) &&
+            user.getSurname().equals(SURNAME) &&
+            user.getPassword() != null
+        )
+    );
   }
 }

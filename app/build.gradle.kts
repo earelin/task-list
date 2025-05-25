@@ -51,6 +51,7 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 
 	"integrationTestImplementation"("io.rest-assured:rest-assured:${restAssuredVersion}")
+	"integrationTestImplementation"("io.rest-assured:spring-mock-mvc:${restAssuredVersion}")
 	"integrationTestImplementation"("org.springframework.security:spring-security-test")
 
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -65,6 +66,7 @@ tasks.register("integrationTest", Test::class) {
 }
 
 tasks.jacocoTestReport {
+	executionData(tasks.test.get(), tasks.named("integrationTest").get())
 	reports {
 		xml.required.set(true)
 		html.required.set(true)
