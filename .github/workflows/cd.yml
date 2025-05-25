@@ -33,25 +33,32 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle
 
       - name: Build
-        run: ./gradlew build --info
+        run: ./gradlew --build-cache build --info
+
       - name: Run docker compose
         uses: hoverkraft-tech/compose-action@v2.2.0
         with:
           compose-flags: --profile run-app
 
       - name: Integration tests
-        run: ./gradlew integrationTest --info
+        run: ./gradlew --build-cache integrationTest --info
 
       - name: SonarQube analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew sonar --info
+        run: ./gradlew --build-cache sonar --info
 
       - name: Acceptance tests
-        run: ./gradlew cucumber --info
+        run: ./gradlew --build-cache cucumber --info
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/gradle-jdk17@master
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --all-projects
+
