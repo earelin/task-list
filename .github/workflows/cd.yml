@@ -37,7 +37,7 @@ jobs:
       - name: Run docker compose
         uses: hoverkraft-tech/compose-action@v2.2.0
         with:
-          docker-flags: --profile run-app
+          compose-flags: --profile run-app
 
       - name: Integration tests
         run: ./gradlew integrationTest --info
