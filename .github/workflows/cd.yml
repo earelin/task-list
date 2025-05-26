@@ -62,3 +62,6 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --all-projects
+
+      - name: Publish container
+        

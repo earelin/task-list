@@ -43,3 +43,6 @@ build/
 
 # Terragrunt
 *.terragrunt-cache/
+
+# GitHub Actions
+gha-creds-*.json
