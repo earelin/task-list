@@ -6,7 +6,7 @@ module "mongodb_user_name" {
   source         = "./modules/secret"
   gcp_region     = var.gcp_region
   gcp_project_id = var.gcp_project_id
-  name          = "mongodb-user-name"
+  name           = "mongodb-user-name"
   value          = "root"
 }
 
@@ -14,7 +14,7 @@ module "mongodb_user_password" {
   source         = "./modules/secret"
   gcp_region     = var.gcp_region
   gcp_project_id = var.gcp_project_id
-  name          = "mongodb-user-password"
+  name           = "mongodb-user-password"
 }
 
 resource "google_service_account" "task_list_service_identity" {
@@ -32,7 +32,7 @@ resource "google_cloud_run_v2_service" "task_list_service" {
         name = "MONGO_INITDB_ROOT_USERNAME"
         value_source {
           secret_key_ref {
-            secret = module.mongodb_user_name.name
+            secret  = module.mongodb_user_name.name
             version = "latest"
           }
         }
@@ -41,7 +41,7 @@ resource "google_cloud_run_v2_service" "task_list_service" {
         name = "MONGO_INITDB_ROOT_PASSWORD"
         value_source {
           secret_key_ref {
-            secret = module.mongodb_user_password.name
+            secret  = module.mongodb_user_password.name
             version = "latest"
           }
         }
@@ -54,7 +54,7 @@ resource "google_cloud_run_v2_service" "task_list_service" {
   }
 
   traffic {
-    percent         = 100
-    revision = google_cloud_run_v2_service.task_list_service.latest_revision
+    percent = 100
+    type    = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
   }
 }
