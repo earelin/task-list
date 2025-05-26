@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="true">
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
     <appender name="CONSOLE_GCP" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
             <providers>
@@ -54,11 +54,6 @@
         </encoder>
     </appender>
 
-    <springProfile name="dev | prod">
-        <root level="INFO">
-            <appender-ref ref="CONSOLE_GCP"/>
-        </root>
-    </springProfile>
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
     </root>
