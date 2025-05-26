@@ -1,15 +1,26 @@
-import gradle.kotlin.dsl.accessors._b5d2fb2a34bca56a40c462d03b0fc4a3.checkstyle
+import com.github.spotbugs.snom.Confidence
+import com.github.spotbugs.snom.Effort
+import com.github.spotbugs.snom.SpotBugsTask
 
 plugins {
     java
     checkstyle
+    id("com.github.spotbugs")
 }
 
 val checkstyleVersion: String by extra
 val lombokVersion: String by extra
+val spotbugsVersion: String by extra
+val findSecBugsPluginVersion: String by extra
 
 repositories {
     mavenCentral()
+}
+
+spotbugs {
+    ignoreFailures = true
+    effort = Effort.MAX
+    reportLevel = Confidence.LOW
 }
 
 java {
@@ -27,15 +38,31 @@ dependencies {
     }
 
     annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
+
     compileOnly("org.projectlombok:lombok:${lombokVersion}")
+
+    spotbugs("com.github.spotbugs:spotbugs:${spotbugsVersion}")
+    spotbugsPlugins("com.h3xstream.findsecbugs:findsecbugs-plugin:${findSecBugsPluginVersion}")
+
     testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
     testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
 }
 
-checkstyle {
-    toolVersion = checkstyleVersion
+tasks.withType<SpotBugsTask>().configureEach {
+    reports {
+        create("html")
+        create("xml")
+    }
+}
+
+tasks.withType<Checkstyle>().configureEach {
+    reports {
+        xml.required.set(false)
+        html.required.set(true)
+    }
 }
 
 tasks.withType<JavaCompile>().configureEach {
     options.compilerArgs.add("-Xlint")
 }
+
