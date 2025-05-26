@@ -33,7 +33,7 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle
 
       - name: Build
-        run: ./gradlew --build-cache build --info
+        run: ./gradlew --build-cache --configuration-cache build --info
 
       - name: Run docker compose
         uses: hoverkraft-tech/compose-action@v2.2.0
@@ -41,12 +41,12 @@ jobs:
           compose-flags: --profile run-app
 
       - name: Integration tests
-        run: ./gradlew --build-cache integrationTest --info
+        run: ./gradlew --build-cache --configuration-cache integrationTest --info
 
       - name: SonarQube analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew --build-cache sonar --info
+        run: ./gradlew --build-cache --configuration-cache sonar --info
 
       - name: Acceptance tests
         run: ./gradlew --build-cache cucumber --info
@@ -62,4 +62,3 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --all-projects
-
