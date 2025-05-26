@@ -34,6 +34,22 @@ services:
     ports:
       - "27017:27017"
 
+  wiremock:
+    image: wiremock/wiremock:3.13.0
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/__admin/mappings" ]
+      interval: 30s
+      retries: 5
+      start_period: 5s
+      timeout: 10s
+    ports:
+      - "8090:8080"
+    volumes:
+      - type: bind
+        source: ./config/docker-compose/wiremock
+        target: /home/wiremock
+        read_only: true
+
   prometheus:
     image: prom/prometheus:v3.3.1
     command:
