@@ -1,5 +1,5 @@
 terraform {
-  source = "../../../terraform/app"
+  source = "../../../components/app"
 }
 
 inputs = {
