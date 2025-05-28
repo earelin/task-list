@@ -23,4 +23,7 @@ COPY --from=builder /application/application ./
 
 USER app
 
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+    CMD ["curl", "--fail", "--silent", "--output", "/dev/null", "http://localhost:8080/actuator/health"]
+
 ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
