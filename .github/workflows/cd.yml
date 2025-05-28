@@ -66,9 +66,8 @@ jobs:
       - name: Lint dockerfile
         uses: bridgecrewio/checkov-action@v12
         with:
-          docker_image: app
-          dockerfile_path: app/Dockerfile
-          download_external_modules: true
+          directory: app
+          file: app/Dockerfile
           framework: dockerfile
           quiet: true
           output_format: sarif
