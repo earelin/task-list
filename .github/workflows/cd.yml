@@ -12,10 +12,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: 17
+          java-version: 21
           distribution: 'temurin'
 
       - name: Cache SonarQube packages
@@ -29,7 +29,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          key: ${{ runner.os }}-gradle
           restore-keys: ${{ runner.os }}-gradle
 
       - name: Build
@@ -63,5 +63,3 @@ jobs:
         with:
           args: --all-projects
 
-      - name: Publish container
-        
