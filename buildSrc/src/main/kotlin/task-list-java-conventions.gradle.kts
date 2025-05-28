@@ -8,10 +8,12 @@ plugins {
     id("com.github.spotbugs")
 }
 
+val bugPatternVersion: String by extra
 val checkstyleVersion: String by extra
+val sbContribVersion: String by extra
+val findSecBugsPluginVersion: String by extra
 val lombokVersion: String by extra
 val spotbugsVersion: String by extra
-val findSecBugsPluginVersion: String by extra
 
 repositories {
     mavenCentral()
@@ -43,6 +45,8 @@ dependencies {
 
     spotbugs("com.github.spotbugs:spotbugs:${spotbugsVersion}")
     spotbugsPlugins("com.h3xstream.findsecbugs:findsecbugs-plugin:${findSecBugsPluginVersion}")
+    spotbugsPlugins("com.mebigfatguy.sb-contrib:sb-contrib:${sbContribVersion}")
+    spotbugsPlugins("jp.skypencil.findbugs.slf4j:bug-pattern:${bugPatternVersion}@jar")
 
     testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
     testCompileOnly("org.projectlombok:lombok:${lombokVersion}")

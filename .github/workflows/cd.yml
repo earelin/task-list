@@ -43,11 +43,6 @@ jobs:
       - name: Integration tests
         run: ./gradlew --build-cache --configuration-cache integrationTest --info
 
-      - name: SonarQube analysis
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew --build-cache --configuration-cache sonar --info
-
       - name: Acceptance tests
         run: ./gradlew --build-cache cucumber --info
 
@@ -63,3 +58,44 @@ jobs:
         with:
           args: --all-projects
 
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+
+      - name: Lint dockerfile
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          docker_image: app
+          dockerfile_path: app/Dockerfile
+          framework: dockerfile
+          quiet: true
+          output_format: sarif
+          output_file_path: build/reports/checkov/dockerfile.sarif
+          use_enforcement_rules: true
+
+      - name: Lint pipelines
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: .github/workflows
+          framework: github_actions
+          quiet: true
+          output_format: sarif
+          output_file_path: build/reports/checkov/pipelines.sarif
+          use_enforcement_rules: true
+
+      - name: Lint terraform files
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: infrastructure
+          download_external_modules: true
+          framework: terraform
+          quiet: true
+          output_format: sarif
+          output_file_path: build/reports/checkov/terraform.sarif
+          use_enforcement_rules: true
+
+      - name: SonarQube analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew --build-cache --configuration-cache sonar --info

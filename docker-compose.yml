@@ -5,6 +5,8 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
+      wiremock:
+        condition: service_healthy
     environment:
       MANAGEMENT_OTLP_TRACING_ENDPOINT: http://jaeger:4317
       SPRING_DATA_MONGODB_HOST: mongodb
