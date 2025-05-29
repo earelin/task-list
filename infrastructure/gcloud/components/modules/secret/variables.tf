@@ -1,5 +1,5 @@
 variable "gcp_project_id" {
-  type    = string
+  type        = string
   description = "The Google Cloud project ID where the secret will be created."
 }
 
@@ -16,5 +16,5 @@ variable "name" {
 variable "value" {
   type        = string
   description = "The value to store in the secret."
-  default = ""
+  default     = ""
 }

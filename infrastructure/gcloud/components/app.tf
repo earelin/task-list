@@ -1,5 +1,5 @@
 resource "google_service_account" "task_list_service_identity" {
-  account_id = "task-list-service"
+  account_id   = "task-list-service"
   display_name = "Task List Service Account"
 }
 
@@ -80,6 +80,13 @@ resource "google_cloud_run_v2_service" "task_list_service" {
       }
       ports {
         container_port = 8080
+      }
+    }
+
+    vpc_access {
+      network_interfaces {
+        subnetwork = google_compute_subnetwork.task_list_subnetwork.name
+        tags       = ["http"]
       }
     }
 

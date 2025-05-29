@@ -18,8 +18,13 @@ lint-pipelines:
 
 lint-terraform:
 	@echo "Linting Terraform files..."
+	@terraform fmt -check -diff -recursive infrastructure
 	@checkov --directory infrastructure \
  		--framework terraform --quiet \
  		--skip-check CKV_TF_1 \
 		--skip-check CKV_TF_2 \
 		--summary-position bottom
+
+fix-lint-terraform:
+	@echo "Fixing Terraform files..."
+	@terraform fmt -recursive infrastructure

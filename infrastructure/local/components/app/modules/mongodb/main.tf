@@ -21,11 +21,11 @@ resource "kubernetes_stateful_set_v1" "mongodb" {
           image = "mongo:${local.mongodb_version}"
           name  = "mongo"
           env {
-            name = "MONGO_INITDB_ROOT_USERNAME"
+            name  = "MONGO_INITDB_ROOT_USERNAME"
             value = "root"
           }
           env {
-            name = "MONGO_INITDB_ROOT_PASSWORD"
+            name  = "MONGO_INITDB_ROOT_PASSWORD"
             value = random_password.mongodb-password.result
           }
           port {
@@ -41,11 +41,11 @@ resource "kubernetes_stateful_set_v1" "mongodb" {
           image = "mongo-express:1.0.2-20-alpine3.19"
           name  = "mongo-express"
           env {
-            name = "ME_CONFIG_MONGODB_ADMINUSERNAME"
+            name  = "ME_CONFIG_MONGODB_ADMINUSERNAME"
             value = "root"
           }
           env {
-            name = "ME_CONFIG_MONGODB_ADMINPASSWORD"
+            name  = "ME_CONFIG_MONGODB_ADMINPASSWORD"
             value = random_password.mongodb-password.result
           }
           env {

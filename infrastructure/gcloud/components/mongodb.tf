@@ -28,6 +28,8 @@ resource "google_compute_instance" "mongodb_instance" {
 
   allow_stopping_for_update = true
 
+  tags = ["task-list", "mongodb"]
+
   boot_disk {
     initialize_params {
       image = "debian-cloud/debian-12"
@@ -64,7 +66,7 @@ resource "google_compute_instance" "mongodb_instance" {
   }
 
   service_account {
-    email = google_service_account.mongodb_service_identity.email
+    email  = google_service_account.mongodb_service_identity.email
     scopes = ["cloud-platform"]
   }
 }
