@@ -94,7 +94,6 @@ jobs:
           quiet: true
           output_format: sarif
           output_file_path: build/reports/checkov/terraform.sarif
-          skip_check: CKV_GCP_26,CKV_GCP_32,CKV_GCP_38,CKV_GCP_39,CKV_GCP_84,CKV_TF_1,CKV_TF_2
           soft_fail: true
 
       - name: SonarQube analysis
