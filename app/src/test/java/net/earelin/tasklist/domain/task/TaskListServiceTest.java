@@ -2,13 +2,11 @@ package net.earelin.tasklist.domain.task;
 
 import static net.earelin.tasklist.domain.task.TaskListFactory.TASK_LIST_ID;
 import static net.earelin.tasklist.domain.task.TaskListFactory.createTaskList;
-import static net.earelin.tasklist.domain.user.UserFactory.createUser;
-import static net.earelin.tasklist.domain.user.UserFactory.createUserWithId;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
-import java.util.Optional;
+import reactor.core.publisher.Mono;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,36 +24,23 @@ class TaskListServiceTest {
   private TaskListService taskListService;
 
   @Test
-  void get_task_list_by_id_for_an_user() {
-    final var user = createUser();
+  void get_task_list_by_id() {
     final var taskList = createTaskList();
     when(taskListRepository.findById(TASK_LIST_ID))
-        .thenReturn(Optional.of(taskList));
+        .thenReturn(Mono.just(taskList));
 
-    var returnedTaskList = taskListService.getTaskList(TASK_LIST_ID, user);
+    var returnedTaskList = taskListService.getTaskList(TASK_LIST_ID);
 
     assertThat(returnedTaskList)
         .isEqualTo(taskList);
   }
 
   @Test
-  void not_found_task_list_by_id_for_an_user() {
-    final var user = createUser();
+  void not_found_task_list_by_idr() {
     when(taskListRepository.findById(TASK_LIST_ID))
-        .thenReturn(Optional.empty());
+        .thenReturn(Mono.empty());
 
-    assertThatThrownBy(() -> taskListService.getTaskList(TASK_LIST_ID, user))
-        .isInstanceOf(TaskListNotFound.class);
-  }
-
-  @Test
-  void user_is_not_task_list_owner() {
-    final var user = createUserWithId("458unfalgkjds9a8sa");
-    final var taskList = createTaskList();
-    when(taskListRepository.findById(TASK_LIST_ID))
-        .thenReturn(Optional.of(taskList));
-
-    assertThatThrownBy(() -> taskListService.getTaskList(TASK_LIST_ID, user))
+    assertThatThrownBy(() -> taskListService.getTaskList(TASK_LIST_ID))
         .isInstanceOf(TaskListNotFound.class);
   }
 }

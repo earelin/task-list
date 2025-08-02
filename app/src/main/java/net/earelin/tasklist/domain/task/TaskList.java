@@ -2,28 +2,22 @@ package net.earelin.tasklist.domain.task;
 
 import static java.util.Objects.nonNull;
 
+import com.google.cloud.firestore.annotation.DocumentId;
+import com.google.cloud.spring.data.firestore.Document;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import net.earelin.tasklist.domain.user.User;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document
+@Document(collectionName = "task_lists")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Getter
 public class TaskList {
-  @Id
+  @DocumentId
   @EqualsAndHashCode.Include
   private final String id;
-
-  @DBRef
-  @Setter
-  private User user;
 
   @Setter
   private String name;
@@ -33,9 +27,8 @@ public class TaskList {
 
   private final Set<Task> tasks = new HashSet<>();
 
-  public TaskList(String id, User user, String name, String description, Set<Task> tasks) {
+  public TaskList(String id, String name, String description, Set<Task> tasks) {
     this.id = id;
-    this.user = user;
     this.name = name;
     this.description = description;
     if (nonNull(tasks)) {
@@ -44,11 +37,11 @@ public class TaskList {
   }
 
   public TaskList withId(String id) {
-    return new TaskList(id, user, name, description, tasks);
+    return new TaskList(id, name, description, tasks);
   }
 
-  public TaskList withUser(User user) {
-    return new TaskList(id, user, name, description, tasks);
+  public TaskList withUserId(String userId) {
+    return new TaskList(id, name, description, tasks);
   }
 
   public Optional<Task> findTaskById(Long id) {

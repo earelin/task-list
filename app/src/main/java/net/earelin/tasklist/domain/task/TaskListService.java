@@ -1,6 +1,5 @@
 package net.earelin.tasklist.domain.task;
 
-import net.earelin.tasklist.domain.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -13,33 +12,28 @@ public class TaskListService {
     this.taskListRepository = taskListRepository;
   }
 
-  public TaskList getTaskList(String taskListId, User user) {
-    var taskListOptional = taskListRepository.findById(taskListId);
+  public TaskList getTaskList(String taskListId) {
+    var taskListOptional = taskListRepository.findById(taskListId).blockOptional();
     if (taskListOptional.isEmpty()) {
       throw new TaskListNotFound();
     }
 
-    var taskList = taskListOptional.get();
-    if (!taskList.getUser().equals(user)) {
-      throw new TaskListNotFound();
-    }
-
-    return taskList;
+    return taskListOptional.get();
   }
 
-  public Page<TaskList> findAllByUser(Pageable pageable, User user) {
-    return taskListRepository.findAllByUser(pageable, user);
+  public Page<TaskList> findAll(Pageable pageable) {
+    return taskListRepository.findAll(pageable);
   }
 
   public TaskList create(TaskList taskList) {
-    return taskListRepository.insert(taskList);
+    return taskListRepository.save(taskList).block();
   }
 
   public void delete(TaskList taskList) {
-    taskListRepository.deleteById(taskList.getId());
+    taskListRepository.deleteById(taskList.getId()).block();
   }
 
   public void save(TaskList updatedTaskList) {
-    taskListRepository.save(updatedTaskList);
+    taskListRepository.save(updatedTaskList).block();
   }
 }

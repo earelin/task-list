@@ -4,7 +4,6 @@ Feature: Task lists
   So that I can group my tasks and track their status
 
   Scenario: Create a new task list
-    Given I have an user account
     When I create a new task list with the information
         | name    | description         |
         | Errands | Tasks to do outside |
@@ -13,8 +12,7 @@ Feature: Task lists
         | Errands | Tasks to do outside |
 
   Scenario: Update a task list
-    Given I have an user account
-      And I have a task list with the information
+    Given I have a task list with the information
         | name    | description         |
         | Errands | Tasks to do outside |
     When I update the task list to
@@ -25,7 +23,6 @@ Feature: Task lists
         | Chores  | Tasks to do at home |
 
   Scenario: Remove a task list
-    Given I have an user account
-      And I have a task list named "Horticulture"
+    Given I have a task list named "Horticulture"
     When I remove the task list "Horticulture"
     Then I should not get the task list "Horticulture"

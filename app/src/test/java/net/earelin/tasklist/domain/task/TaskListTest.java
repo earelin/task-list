@@ -5,8 +5,6 @@ import static net.earelin.tasklist.domain.task.TaskFactory.createTask;
 import static net.earelin.tasklist.domain.task.TaskListFactory.TASK_LIST_DESCRIPTION;
 import static net.earelin.tasklist.domain.task.TaskListFactory.TASK_LIST_ID;
 import static net.earelin.tasklist.domain.task.TaskListFactory.TASK_LIST_NAME;
-import static net.earelin.tasklist.domain.user.UserFactory.createUser;
-import static net.earelin.tasklist.domain.user.UserFactory.createUserWithId;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -15,20 +13,15 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import net.earelin.tasklist.domain.user.User;
-
 class TaskListTest {
-  private User user;
   private TaskList taskList;
   private Set<Task> tasks;
 
   @BeforeEach
   void setUp() {
     tasks = Set.of(createTask());
-    user = createUser();
     taskList = new TaskList(
         TASK_LIST_ID,
-        user,
         TASK_LIST_NAME,
         TASK_LIST_DESCRIPTION,
         tasks
@@ -40,7 +33,6 @@ class TaskListTest {
     assertThat(taskList)
         .satisfies(
             tl -> assertThat(tl.getId()).isEqualTo(TASK_LIST_ID),
-            tl -> assertThat(tl.getUser()).isEqualTo(user),
             tl -> assertThat(tl.getName()).isEqualTo(TASK_LIST_NAME),
             tl -> assertThat(tl.getDescription()).isEqualTo(TASK_LIST_DESCRIPTION),
             tl -> assertThat(tl.getTasks()).isEqualTo(tasks)
@@ -51,7 +43,6 @@ class TaskListTest {
   void create_task_list_with_null_tasks() {
     taskList = new TaskList(
         TASK_LIST_ID,
-        user,
         TASK_LIST_NAME,
         TASK_LIST_DESCRIPTION,
         null
@@ -60,7 +51,6 @@ class TaskListTest {
     assertThat(taskList)
         .satisfies(
             tl -> assertThat(tl.getId()).isEqualTo(TASK_LIST_ID),
-            tl -> assertThat(tl.getUser()).isEqualTo(user),
             tl -> assertThat(tl.getName()).isEqualTo(TASK_LIST_NAME),
             tl -> assertThat(tl.getDescription()).isEqualTo(TASK_LIST_DESCRIPTION),
             tl -> assertThat(tl.getTasks()).isEmpty()
@@ -76,24 +66,6 @@ class TaskListTest {
     assertThat(updatedTaskList)
         .satisfies(
             tl -> assertThat(tl.getId()).isEqualTo(newId),
-            tl -> assertThat(tl.getUser()).isEqualTo(user),
-            tl -> assertThat(tl.getName()).isEqualTo(TASK_LIST_NAME),
-            tl -> assertThat(tl.getDescription()).isEqualTo(TASK_LIST_DESCRIPTION),
-            tl -> assertThat(tl.getTasks()).isEqualTo(tasks)
-        );
-  }
-
-  @Test
-  void create_task_list_with_an_updated_user() {
-    final var newUserId = "3jlkfjdsf8jdsf";
-    final var newUser = createUserWithId(newUserId);
-
-    final var updatedTaskList = taskList.withUser(newUser);
-
-    assertThat(updatedTaskList)
-        .satisfies(
-            tl -> assertThat(tl.getId()).isEqualTo(TASK_LIST_ID),
-            tl -> assertThat(tl.getUser()).isEqualTo(newUser),
             tl -> assertThat(tl.getName()).isEqualTo(TASK_LIST_NAME),
             tl -> assertThat(tl.getDescription()).isEqualTo(TASK_LIST_DESCRIPTION),
             tl -> assertThat(tl.getTasks()).isEqualTo(tasks)

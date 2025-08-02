@@ -5,12 +5,10 @@ import net.earelin.tasklist.application.rest.tasklist.dto.ModifyTaskListDto;
 import net.earelin.tasklist.application.rest.tasklist.dto.TaskListDto;
 import net.earelin.tasklist.application.rest.tasklist.dto.TaskListDtoMappers;
 import net.earelin.tasklist.domain.task.TaskListService;
-import net.earelin.tasklist.domain.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,26 +33,22 @@ public class TaskListController {
   }
 
   @GetMapping
-  public ResponseEntity<Page<TaskListDto>> list(@AuthenticationPrincipal User user,
-      Pageable pageable) {
-    var taskList = taskListService.findAllByUser(pageable, user);
+  public ResponseEntity<Page<TaskListDto>> list(Pageable pageable) {
+    var taskList = taskListService.findAll(pageable);
 
     return ResponseEntity.ok(taskListDtoMappers.entityToDtoPage(taskList));
   }
 
   @GetMapping("/{taskListId}")
-  public ResponseEntity<TaskListDto> get(@PathVariable String taskListId,
-      @AuthenticationPrincipal User user) {
-    var taskList = taskListService.getTaskList(taskListId, user);
+  public ResponseEntity<TaskListDto> get(@PathVariable String taskListId) {
+    var taskList = taskListService.getTaskList(taskListId);
 
     return ResponseEntity.ok(taskListDtoMappers.entityToDto(taskList));
   }
 
   @PostMapping
-  public ResponseEntity<TaskListDto> create(@RequestBody ModifyTaskListDto createTaskListDto,
-      @AuthenticationPrincipal User user) {
-    var taskList = taskListDtoMappers.dtoToEntity(createTaskListDto)
-        .withUser(user);
+  public ResponseEntity<TaskListDto> create(@RequestBody ModifyTaskListDto createTaskListDto) {
+    var taskList = taskListDtoMappers.dtoToEntity(createTaskListDto);
     var createdTaskList = taskListService.create(taskList);
 
     log.atInfo()
@@ -67,9 +61,8 @@ public class TaskListController {
 
   @PutMapping("/{taskListId}")
   public ResponseEntity<TaskListDto> update(@RequestBody ModifyTaskListDto updateTaskListDto,
-      @PathVariable String taskListId,
-      @AuthenticationPrincipal User user) {
-    var taskList = taskListService.getTaskList(taskListId, user);
+      @PathVariable String taskListId) {
+    var taskList = taskListService.getTaskList(taskListId);
 
     var updatedTaskList = taskListDtoMappers.updateEntityFromDto(updateTaskListDto, taskList);
     taskListService.save(updatedTaskList);
@@ -78,9 +71,8 @@ public class TaskListController {
   }
 
   @DeleteMapping("/{taskListId}")
-  public ResponseEntity<Void> delete(@PathVariable String taskListId,
-      @AuthenticationPrincipal User user) {
-    var taskList = taskListService.getTaskList(taskListId, user);
+  public ResponseEntity<Void> delete(@PathVariable String taskListId) {
+    var taskList = taskListService.getTaskList(taskListId);
 
     taskListService.delete(taskList);
 
