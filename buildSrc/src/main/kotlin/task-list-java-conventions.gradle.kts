@@ -40,16 +40,14 @@ dependencies {
     }
 
     annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
-
     compileOnly("org.projectlombok:lombok:${lombokVersion}")
+    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
+    testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
 
     spotbugs("com.github.spotbugs:spotbugs:${spotbugsVersion}")
     spotbugsPlugins("com.h3xstream.findsecbugs:findsecbugs-plugin:${findSecBugsPluginVersion}")
     spotbugsPlugins("com.mebigfatguy.sb-contrib:sb-contrib:${sbContribVersion}")
     spotbugsPlugins("jp.skypencil.findbugs.slf4j:bug-pattern:${bugPatternVersion}@jar")
-
-    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
-    testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
 }
 
 tasks.withType<SpotBugsTask>().configureEach {

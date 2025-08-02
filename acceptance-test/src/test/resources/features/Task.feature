@@ -4,8 +4,7 @@ Feature: Task
   So that I can organize my time
 
   Scenario: Create a new task
-    Given I have an user account
-      And I have a task list named "Errands"
+    Given I have a task list named "Errands"
     When I create a new task with the information
       | name        | description        |
       | Supermarket | Buy food for lunch |
@@ -14,8 +13,7 @@ Feature: Task
       | Supermarket | Buy food for lunch |
 
   Scenario: Update a task
-    Given I have an user account
-      And I have a task list named "Errands"
+    Given I have a task list named "Errands"
       And I have a task with the information
         | name        | description        |
         | Supermarket | Buy food for lunch |
@@ -27,8 +25,7 @@ Feature: Task
       | Restaurant  | Order food for lunch |
 
   Scenario: Remove a task
-    Given I have an user account
-      And I have a task list named "Horticulture"
+    Given I have a task list named "Horticulture"
       And I have a task with the information
         | name        | description        |
         | Supermarket | Buy food for lunch |
@@ -36,8 +33,7 @@ Feature: Task
     Then I should not get the task "Supermarket"
 
   Scenario: Add a tag to a task
-    Given I have an user account
-      And I have a task list named "Errands"
+    Given I have a task list named "Errands"
       And I have a task with the information
         | name        | description        |
         | Supermarket | Buy food for lunch |
