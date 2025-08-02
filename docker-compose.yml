@@ -22,19 +22,11 @@ services:
     profiles:
       - run-app
 
-  mongodb:
-    image: mongo:8.0.9
-    environment:
-      MONGO_INITDB_ROOT_PASSWORD: secret
-      MONGO_INITDB_ROOT_USERNAME: root
-    healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh mongodb://root:secret@localhost:27017/?authSource=admin --quiet
-      interval: 30s
-      retries: 5
-      start_period: 5s
-      timeout: 10s
+  firestore:
+    image: google/cloud-sdk:532.0.0-emulators
+    command: gcloud beta emulators firestore start
     ports:
-      - "27017:27017"
+      - "8100:8080"
 
   wiremock:
     image: wiremock/wiremock:3.13.0
