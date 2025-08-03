@@ -23,7 +23,7 @@ This is a multi-module Gradle project using Java 21 and Spring Boot 3.5.0. Key c
 - `make fix-lint-terraform` - Auto-fix Terraform formatting
 
 **Docker & Local Development:**
-- `docker-compose up mongodb` - Start MongoDB
+- `docker-compose up -d` - Start service dependencies (Firestore, WireMock)
 - `docker-compose --profile run-app up` - Start app with dependencies
 - `docker-compose --profile observability up` - Start with monitoring stack (Prometheus, Grafana, Jaeger)
 
@@ -40,17 +40,16 @@ The application follows DDD principles with clear separation:
 - `domain/` - Core business logic (Task, TaskList, User entities and services)
 - `application/rest/` - REST controllers and DTOs
 - `application/security/` - Security configuration
-- `mongo/` - MongoDB configuration
+- `infrastructure/firestore` - Firestore configuration
 
 **Key Domain Concepts:**
 - `TaskList` - Aggregate root containing tasks, owned by a user
 - `Task` - Value object with name, description, completion status, tags, deadlines
-- `User` - Entity for authentication and task list ownership
-- Tasks use embedded IDs within TaskLists (not global MongoDB IDs)
+- Tasks use embedded IDs within TaskLists
 
 **Technology Stack:**
 - Spring Boot 3.5.0 with Spring Security, Spring Data MongoDB
-- MongoDB for persistence with DBRef relationships
+- Firestore for persistence
 - MapStruct for DTO mapping
 - Lombok for boilerplate reduction
 - Caffeine for caching
@@ -71,7 +70,7 @@ The application follows DDD principles with clear separation:
 ## Infrastructure
 
 **Local Development:**
-- Docker Compose provides MongoDB, WireMock, and observability stack
+- Docker Compose provides Firestore, WireMock, and observability stack
 - Terraform modules in `infrastructure/local/` for container orchestration
 - Health checks configured for all services
 
@@ -89,6 +88,4 @@ The application follows DDD principles with clear separation:
 - Checkov for infrastructure security scanning
 
 **Security Features:**
-- Spring Security with password encoding (CachedPasswordEncoder)
-- User-based access control for task lists
-- Secure MongoDB configuration with authentication
+- Secure Firestore configuration with authentication

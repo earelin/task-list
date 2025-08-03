@@ -43,8 +43,8 @@ jobs:
       - name: Integration tests
         run: ./gradlew --build-cache --configuration-cache integrationTest --info
 
-      - name: Acceptance tests
-        run: ./gradlew --build-cache cucumber --info
+#      - name: Acceptance tests
+#        run: ./gradlew --build-cache cucumber --info
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4

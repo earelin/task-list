@@ -36,6 +36,10 @@ resource "google_cloud_run_v2_service" "task_list_service" {
         name  = "LOGBACK_APPENDER"
         value = "CONSOLE_GCP"
       }
+      env {
+        name  = "SPRING_CLOUD_GCP_FIRESTORE_EMULATOR_ENABLED"
+        value = "false"
+      }
       resources {
         limits = {
           cpu    = "1"
