@@ -12,5 +12,5 @@ resource "google_firestore_database" "task_list_database" {
 resource "google_project_iam_member" "task_list_firestore_user" {
   project = var.gcp_project_id
   role    = "roles/datastore.user"
-  member  = "serviceAccount:${google_service_account.task_list_service_identity.email}"
+  member  = "serviceAccount:${var.service_account_email}"
 }

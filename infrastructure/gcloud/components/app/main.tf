@@ -53,7 +53,7 @@ resource "google_cloud_run_v2_service" "task_list_service" {
 
     vpc_access {
       network_interfaces {
-        subnetwork = google_compute_subnetwork.task_list_subnetwork.name
+        subnetwork = var.gcp_subnetwork_name
         tags       = ["http"]
       }
     }

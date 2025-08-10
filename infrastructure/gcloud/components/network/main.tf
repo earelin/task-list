@@ -25,20 +25,6 @@ resource "google_compute_firewall" "allow_http" {
   target_tags   = ["http"]
 }
 
-resource "google_compute_firewall" "allow_mongodb" {
-  name        = "allow-mongodb"
-  network     = google_compute_network.task_list_network.id
-  description = "Creates firewall rule for MongoDB connections"
-
-  allow {
-    protocol = "tcp"
-    ports    = ["27017"]
-  }
-
-  source_ranges = [google_compute_subnetwork.task_list_subnetwork.ip_cidr_range]
-  target_tags   = ["mongodb"]
-}
-
 resource "google_compute_firewall" "allow_ssh" {
   name        = "allow-ssh"
   network     = google_compute_network.task_list_network.id
