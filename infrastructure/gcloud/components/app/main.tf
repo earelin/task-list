@@ -31,7 +31,7 @@ resource "google_cloud_run_v2_service" "task_list_service" {
 
   template {
     containers {
-      image = "${var.gcp_region}-docker.pkg.dev/${var.gcp_project_id}/${google_artifact_registry_repository.task_list_repository.repository_id}/task-list-app:${var.app_version}"
+      image = "nginx:1.29.0"
       env {
         name  = "LOGBACK_APPENDER"
         value = "CONSOLE_GCP"
@@ -47,7 +47,7 @@ resource "google_cloud_run_v2_service" "task_list_service" {
         }
       }
       ports {
-        container_port = 8080
+        container_port = 80
       }
     }
 
