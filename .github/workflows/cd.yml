@@ -18,6 +18,9 @@ jobs:
           java-version: 21
           distribution: 'temurin'
 
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
       - name: Cache SonarQube packages
         uses: actions/cache@v4
         with:
@@ -25,15 +28,8 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      - name: Cache Gradle packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle
-          restore-keys: ${{ runner.os }}-gradle
-
       - name: Build
-        run: ./gradlew --build-cache --configuration-cache build --info
+        run: gradle --build-cache --configuration-cache build --info
 
       - name: Run docker compose
         uses: hoverkraft-tech/compose-action@v2.2.0
@@ -41,13 +37,9 @@ jobs:
           compose-flags: --profile run-app
 
       - name: Integration tests
-        run: ./gradlew --build-cache --configuration-cache integrationTest --info
+        run: gradle --build-cache --configuration-cache integrationTest --info
 
-#      - name: Acceptance tests
-#        run: ./gradlew --build-cache cucumber --info
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+      
 
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/gradle@master
