@@ -111,4 +111,4 @@ jobs:
       - name: SonarQube analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew --build-cache --configuration-cache sonar --info
+        run: gradle --build-cache --configuration-cache sonar --info
