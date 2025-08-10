@@ -5,17 +5,17 @@ resource "google_service_account" "github_actions" {
 }
 
 # Workload Identity Pool (one per project if not existing)
-resource "google_iam_workload_identity_pool" "github" {
-  workload_identity_pool_id = "github-pool"
+resource "google_iam_workload_identity_pool" "github_actions" {
+  workload_identity_pool_id = "github-actions-pool"
   display_name              = "GitHub OIDC Pool"
   description               = "Pool for GitHub Actions direct workload identity federation"
   project                   = var.gcp_project_id
 }
 
 # Workload Identity Pool Provider for GitHub
-resource "google_iam_workload_identity_pool_provider" "github" {
-  workload_identity_pool_id          = google_iam_workload_identity_pool.github.workload_identity_pool_id
-  workload_identity_pool_provider_id = "github-provider"
+resource "google_iam_workload_identity_pool_provider" "github_actions" {
+  workload_identity_pool_id          = google_iam_workload_identity_pool.github_actions.workload_identity_pool_id
+  workload_identity_pool_provider_id = "github-actions-provider"
   display_name                       = "GitHub Provider"
   description                        = "Trust configuration for GitHub OIDC tokens"
   project                            = var.gcp_project_id
@@ -31,14 +31,17 @@ resource "google_iam_workload_identity_pool_provider" "github" {
     "attribute.repository" = "assertion.repository"
     "attribute.ref"        = "assertion.ref"
   }
+
+  attribute_condition = "assertion.repository == '${var.github_repository}' && assertion.ref == 'refs/heads/trunk'"
 }
 
-# Bind service account to Workload Identity Pool for specific repo
-# Only allow the exact repository on refs/heads/trunk
+# Bind service account to Workload Identity Pool for specific repo and branch
 resource "google_service_account_iam_member" "wif_binding" {
   service_account_id = google_service_account.github_actions.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github.name}/attribute.repository/${var.github_repository}"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github_actions.name}/attribute.repository/${var.github_repository}"
+  
+  depends_on = [google_iam_workload_identity_pool_provider.github_actions]
 }
 
 # Project-level role bindings
