@@ -29,7 +29,7 @@ jobs:
           restore-keys: ${{ runner.os }}-sonar
 
       - name: Build
-        run: gradle --build-cache --configuration-cache build --info
+        run: gradle --build-cache --configuration-cache :app:build --info
 
       - name: Run docker compose
         uses: hoverkraft-tech/compose-action@v2.2.0
@@ -37,7 +37,7 @@ jobs:
           compose-flags: --profile run-app
 
       - name: Integration tests
-        run: gradle --build-cache --configuration-cache integrationTest --info
+        run: gradle --build-cache --configuration-cache :app:integrationTest --info
 
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/gradle@master
