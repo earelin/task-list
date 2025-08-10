@@ -1,0 +1,13 @@
+# Ignore everything by default
+**
+
+# Allow the built application jars only
+!build/
+!build/libs/
+!build/libs/*.jar
+
+# Still ignore any temporary or exploded dirs inside build except libs
+build/*
+!build/libs
+build/libs/*
+!build/libs/*.jar
