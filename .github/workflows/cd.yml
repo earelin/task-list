@@ -39,8 +39,6 @@ jobs:
       - name: Integration tests
         run: gradle --build-cache --configuration-cache integrationTest --info
 
-      
-
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/gradle@master
         continue-on-error: true

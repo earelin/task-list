@@ -1,29 +1,15 @@
-import com.github.spotbugs.snom.Confidence
-import com.github.spotbugs.snom.Effort
-import com.github.spotbugs.snom.SpotBugsTask
-
 plugins {
     java
     checkstyle
-    id("com.github.spotbugs")
 }
 
-val bugPatternVersion: String by extra
 val checkstyleVersion: String by extra
-val sbContribVersion: String by extra
-val findSecBugsPluginVersion: String by extra
 val lombokVersion: String by extra
-val spotbugsVersion: String by extra
 
 repositories {
     mavenCentral()
 }
 
-spotbugs {
-    ignoreFailures = true
-    effort = Effort.MAX
-    reportLevel = Confidence.LOW
-}
 
 java {
     toolchain {
@@ -43,18 +29,6 @@ dependencies {
     compileOnly("org.projectlombok:lombok:${lombokVersion}")
     testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
     testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
-
-    spotbugs("com.github.spotbugs:spotbugs:${spotbugsVersion}")
-    spotbugsPlugins("com.h3xstream.findsecbugs:findsecbugs-plugin:${findSecBugsPluginVersion}")
-    spotbugsPlugins("com.mebigfatguy.sb-contrib:sb-contrib:${sbContribVersion}")
-    spotbugsPlugins("jp.skypencil.findbugs.slf4j:bug-pattern:${bugPatternVersion}@jar")
-}
-
-tasks.withType<SpotBugsTask>().configureEach {
-    reports {
-        create("html")
-        create("xml")
-    }
 }
 
 tasks.withType<Checkstyle>().configureEach {
