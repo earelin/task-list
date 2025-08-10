@@ -25,11 +25,11 @@ resource "google_iam_workload_identity_pool_provider" "github" {
   }
 
   attribute_mapping = {
-    "google.subject"        = "assertion.sub"
-    "attribute.actor"       = "assertion.actor"
-    "attribute.aud"         = "assertion.aud"
-    "attribute.repository"  = "assertion.repository"
-    "attribute.ref"         = "assertion.ref"
+    "google.subject"       = "assertion.sub"
+    "attribute.actor"      = "assertion.actor"
+    "attribute.aud"        = "assertion.aud"
+    "attribute.repository" = "assertion.repository"
+    "attribute.ref"        = "assertion.ref"
   }
 }
 

@@ -1,10 +1,6 @@
 name: Continuous Delivery
-on:
-  push:
-    branches:
-      - trunk
 jobs:
-  build:
+  lint:
     name: Build and analyze
     runs-on: ubuntu-latest
     steps:
@@ -63,27 +59,7 @@ jobs:
         with:
           python-version: 3.13
 
-      - name: Detect file changes
-        id: file_changes
-        run: |
-          if git diff --name-only HEAD^ HEAD | grep -q '^app/Dockerfile$'; then
-            echo "dockerfile=true" >> $GITHUB_OUTPUT
-          else
-            echo "dockerfile=false" >> $GITHUB_OUTPUT
-          fi
-          if git diff --name-only HEAD^ HEAD | grep -q '^.github/workflows/cd.yml$'; then
-            echo "pipelines=true" >> $GITHUB_OUTPUT
-          else
-            echo "pipelines=false" >> $GITHUB_OUTPUT
-          fi
-          if git diff --name-only HEAD^ HEAD | grep -q '^infrastructure/.*$'; then
-            echo "terraform=true" >> $GITHUB_OUTPUT
-          else
-            echo "terraform=false" >> $GITHUB_OUTPUT
-          fi
-
       - name: Lint dockerfile
-        if: steps.file_changes.outputs.dockerfile == 'true'
         uses: bridgecrewio/checkov-action@v12
         with:
           directory: app
@@ -95,7 +71,6 @@ jobs:
           soft_fail: true
 
       - name: Lint pipelines
-        if: steps.file_changes.outputs.pipelines == 'true'
         uses: bridgecrewio/checkov-action@v12
         with:
           directory: .github/workflows
@@ -107,7 +82,6 @@ jobs:
           soft_fail: true
 
       - name: Lint terraform files
-        if: steps.file_changes.outputs.terraform == 'true'
         uses: bridgecrewio/checkov-action@v12
         with:
           directory: infrastructure

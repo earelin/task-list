@@ -22,7 +22,7 @@ variable "service_account_id" {
 variable "sa_roles" {
   description = "List of IAM roles to bind to the service account"
   type        = list(string)
-  default     = [
+  default = [
     "roles/artifactregistry.writer",
     "roles/run.admin",
     "roles/iam.serviceAccountTokenCreator"

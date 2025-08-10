@@ -1,6 +1,6 @@
 variable "app_version" {
   description = "The version of the application to deploy"
-  type        = string  
+  type        = string
 }
 
 variable "gcp_project_id" {
