@@ -41,4 +41,3 @@ tasks.withType<Checkstyle>().configureEach {
 tasks.withType<JavaCompile>().configureEach {
     options.compilerArgs.add("-Xlint")
 }
-
