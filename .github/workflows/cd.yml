@@ -7,6 +7,9 @@ jobs:
   build:
     name: Build and analyze
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -112,3 +115,28 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: gradle --build-cache --configuration-cache sonar --info
+
+      - name: Authenticate to Google Cloud (Workload Identity Federation)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+
+      - name: Set up gcloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Build & Push container image
+        env:
+          GCP_REGION: europe-southwest1
+          GCP_PROJECT_ID: task-list-dev-460922
+          AR_REPOSITORY_ID: task-list
+          IMAGE_NAME: task-list-app
+        run: |
+          SHORT_SHA="${GITHUB_SHA::12}"
+          IMAGE_TAG="$SHORT_SHA"
+          FULL_IMAGE_PATH="$GCP_REGION-docker.pkg.dev/$GCP_PROJECT_ID/$AR_REPOSITORY_ID/$IMAGE_NAME:$IMAGE_TAG"
+          echo "Publishing image $FULL_IMAGE_PATH"
+          gcloud auth configure-docker "$GCP_REGION-docker.pkg.dev" --quiet
+          docker build -t "$FULL_IMAGE_PATH" -f app/Dockerfile app
+          docker push "$FULL_IMAGE_PATH"
+          echo "full_image=$FULL_IMAGE_PATH" >> $GITHUB_OUTPUT
