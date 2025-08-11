@@ -24,6 +24,22 @@ resource "google_artifact_registry_repository_iam_binding" "task_list_repository
   ]
 }
 
+resource "google_artifact_registry_repository_iam_member" "task_list_repository_github_actions_writer" {
+  count      = var.github_actions_service_account_email == null ? 0 : 1
+  project    = var.gcp_project_id
+  location   = var.gcp_region
+  repository = google_artifact_registry_repository.task_list_repository.name
+  role       = "roles/artifactregistry.writer"
+  member     = "serviceAccount:${var.github_actions_service_account_email}"
+}
+
+# Allow Cloud Run service account to attach to VPC resources (required for direct VPC egress)
+resource "google_project_iam_member" "task_list_service_network_user" {
+  project = var.gcp_project_id
+  role    = "roles/compute.networkUser"
+  member  = "serviceAccount:${google_service_account.task_list_service_identity.email}"
+}
+
 resource "google_cloud_run_v2_service" "task_list_service" {
   name                = "task-list"
   location            = var.gcp_region
@@ -65,4 +81,8 @@ resource "google_cloud_run_v2_service" "task_list_service" {
     percent = 100
     type    = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
   }
+
+  depends_on = [
+    google_project_iam_member.task_list_service_network_user
+  ]
 }

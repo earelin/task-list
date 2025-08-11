@@ -17,3 +17,9 @@ variable "gcp_subnetwork_name" {
   description = "The name of the GCP subnetwork to use for the application"
   type        = string
 }
+
+variable "github_actions_service_account_email" {
+  description = "Service account email used by GitHub Actions for pushing images"
+  type        = string
+  default     = null
+}

@@ -1,6 +1,6 @@
 resource "google_firestore_database" "task_list_database" {
   project                     = var.gcp_project_id
-  name                        = "(default)"
+  name                        = "task-list"
   location_id                 = var.gcp_region
   type                        = "FIRESTORE_NATIVE"
   concurrency_mode            = "OPTIMISTIC"
