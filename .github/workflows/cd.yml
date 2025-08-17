@@ -50,9 +50,7 @@ jobs:
         env:
           DEBUG: "*snyk*"
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --all-projects
-
+1
       - name: Set up Python 3.13
         uses: actions/setup-python@v5
         with:
