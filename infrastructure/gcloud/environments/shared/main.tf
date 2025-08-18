@@ -10,9 +10,9 @@ resource "google_artifact_registry_repository" "task_list_repository" {
 }
 
 module "github_actions" {
-  source             = "../../components/github_actions"
-  gcp_project_id     = local.gcp_project_id
-  gcp_region         = local.gcp_region
+  source                    = "../../components/github_actions"
+  gcp_project_id            = local.gcp_project_id
+  gcp_region                = local.gcp_region
   task_list_repository_name = google_artifact_registry_repository.task_list_repository.name
 }
 
