@@ -116,7 +116,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: gradle --build-cache --configuration-cache sonar --info
 
-      - name: Authenticate to Google Cloud
+      - id: gcloud-auth
+        name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
           credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
@@ -135,6 +136,7 @@ jobs:
           IMAGE_TAG="$SHORT_SHA"
           FULL_IMAGE_PATH="$GCP_REGION-docker.pkg.dev/$GCP_PROJECT_ID/$AR_REPOSITORY_ID/$IMAGE_NAME:$IMAGE_TAG"
           echo "Publishing image $FULL_IMAGE_PATH"
+          gcloud auth login --cred-file="${{ steps.gcloud-auth.outputs.credentials_file_path }}"
           gcloud auth configure-docker "$GCP_REGION-docker.pkg.dev"
           docker build -t "$FULL_IMAGE_PATH" -f app/Dockerfile app
           docker push "$FULL_IMAGE_PATH"
