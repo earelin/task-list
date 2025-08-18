@@ -41,8 +41,13 @@ jobs:
       - name: Integration tests
         run: gradle --build-cache --configuration-cache :app:integrationTest --info
 
-      - name: Image build
-        run: docker build . -t task-list:${{ github.sha }}
+      - uses: docker/setup-buildx-action@v3
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./app          
+          push: false
+          tags: task-list:${{ github.sha }}
 
       - uses: snyk/actions/setup@master
       - name: Run Snyk to check for vulnerabilities
