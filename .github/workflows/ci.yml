@@ -58,7 +58,7 @@ jobs:
           snyk test --all-sub-projects --dev --sarif --sarif-file-output=build/reports/snyk/general.sarif
           snyk code test --all-projects --dev --sarif --sarif-file-output=build/reports/snyk/code.sarif
           snyk container test --sarif --sarif-file-output=build/reports/snyk/container.sarif task-list:${{ github.sha }}
-
+          snyk iac test --sarif --sarif-file-output=build/reports/snyk/iac.sarif infrastructure
       - name: Set up Python 3.13
         uses: actions/setup-python@v5
         with:
