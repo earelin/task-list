@@ -49,7 +49,7 @@ jobs:
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: snyk monitor --all-sub-projects
+        run: snyk monitor --all-sub-projects --dev
 
       - name: Set up Python 3.13
         uses: actions/setup-python@v5
@@ -129,13 +129,13 @@ jobs:
           GCP_REGION: europe-southwest1
           GCP_PROJECT_ID: task-list-dev-460922
           AR_REPOSITORY_ID: task-list
-          IMAGE_NAME: task-list-app
+          IMAGE_NAME: task-list
         run: |
           SHORT_SHA="${GITHUB_SHA::12}"
           IMAGE_TAG="$SHORT_SHA"
           FULL_IMAGE_PATH="$GCP_REGION-docker.pkg.dev/$GCP_PROJECT_ID/$AR_REPOSITORY_ID/$IMAGE_NAME:$IMAGE_TAG"
           echo "Publishing image $FULL_IMAGE_PATH"
-          gcloud auth configure-docker "$GCP_REGION-docker.pkg.dev" --quiet
+          gcloud auth configure-docker "$GCP_REGION-docker.pkg.dev"
           docker build -t "$FULL_IMAGE_PATH" -f app/Dockerfile app
           docker push "$FULL_IMAGE_PATH"
           echo "full_image=$FULL_IMAGE_PATH" >> $GITHUB_OUTPUT
