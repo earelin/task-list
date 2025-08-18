@@ -44,16 +44,13 @@ jobs:
       - name: Integration tests
         run: gradle --build-cache --configuration-cache :app:integrationTest --info
 
+      - uses: snyk/actions/setup@master
       - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/gradle@0.4.0
         continue-on-error: true
         env:
-          DEBUG: "*snyk*"
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --all-projects
-          command: monitor
-
+        run: snyk test
+        
       - name: Set up Python 3.13
         uses: actions/setup-python@v5
         with:
