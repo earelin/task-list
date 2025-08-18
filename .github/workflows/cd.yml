@@ -124,3 +124,11 @@ jobs:
           file: ./app/Dockerfile
           push: true
           tags: "task-list:${{ github.sha }}"
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
