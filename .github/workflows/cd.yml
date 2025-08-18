@@ -136,7 +136,7 @@ jobs:
           IMAGE_TAG="$SHORT_SHA"
           FULL_IMAGE_PATH="$GCP_REGION-docker.pkg.dev/$GCP_PROJECT_ID/$AR_REPOSITORY_ID/$IMAGE_NAME:$IMAGE_TAG"
           echo "Publishing image $FULL_IMAGE_PATH"
-          gcloud auth application-default login 
+          gcloud auth application-default login --quiet
           gcloud auth configure-docker "$GCP_REGION-docker.pkg.dev"
           docker build -t "$FULL_IMAGE_PATH" -f app/Dockerfile app
           docker push "$FULL_IMAGE_PATH"
