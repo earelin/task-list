@@ -47,8 +47,8 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
-          snyk test --all-sub-projects --dev
-          snyk code test --all-projects --dev
+          snyk test --all-sub-projects --dev --sarif --sarif-file-output=build/reports/snyk/general.sarif
+          snyk code test --all-projects --dev --sarif --sarif-file-output=build/reports/snyk/code.sarif
 
       - name: Set up Python 3.13
         uses: actions/setup-python@v5
