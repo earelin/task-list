@@ -1,0 +1,116 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+    types: [opened, reopened]
+
+jobs:
+  build:
+    name: Build and analyze
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21.0.7'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Build
+        run: gradle --build-cache --configuration-cache :app:build --info
+
+      - name: Run docker compose
+        uses: hoverkraft-tech/compose-action@v2.2.0
+        with:
+          compose-flags: --profile run-app
+
+      - name: Integration tests
+        run: gradle --build-cache --configuration-cache :app:integrationTest --info
+
+      - uses: snyk/actions/setup@master
+      - name: Run Snyk to check for vulnerabilities
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          snyk test --all-sub-projects --dev
+          snyk code test --all-projects --dev
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+
+      - name: Detect file changes
+        id: file_changes
+        run: |
+          if git diff --name-only HEAD^ HEAD | grep -q '^app/Dockerfile$'; then
+            echo "dockerfile=true" >> $GITHUB_OUTPUT
+          else
+            echo "dockerfile=false" >> $GITHUB_OUTPUT
+          fi
+          if git diff --name-only HEAD^ HEAD | grep -q '^.github/workflows/cd.yml$'; then
+            echo "pipelines=true" >> $GITHUB_OUTPUT
+          else
+            echo "pipelines=false" >> $GITHUB_OUTPUT
+          fi
+          if git diff --name-only HEAD^ HEAD | grep -q '^infrastructure/.*$'; then
+            echo "terraform=true" >> $GITHUB_OUTPUT
+          else
+            echo "terraform=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Lint dockerfile
+        if: steps.file_changes.outputs.dockerfile == 'true'
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: app
+          file: app/Dockerfile
+          framework: dockerfile
+          quiet: true
+          output_format: sarif
+          output_file_path: build/reports/checkov/dockerfile.sarif
+          soft_fail: true
+
+      - name: Lint pipelines
+        if: steps.file_changes.outputs.pipelines == 'true'
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: .github/workflows
+          download_external_modules: true
+          framework: github_actions
+          quiet: true
+          output_format: sarif
+          output_file_path: build/reports/checkov/pipelines.sarif
+          soft_fail: true
+
+      - name: Lint terraform files
+        if: steps.file_changes.outputs.terraform == 'true'
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: infrastructure
+          download_external_modules: true
+          framework: terraform
+          quiet: true
+          output_format: sarif
+          output_file_path: build/reports/checkov/terraform.sarif
+          soft_fail: true
+
+      - name: SonarQube analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: gradle --build-cache --configuration-cache sonar --info
