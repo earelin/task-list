@@ -52,6 +52,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --all-projects
+          command: monitor
 
       - name: Set up Python 3.13
         uses: actions/setup-python@v5
