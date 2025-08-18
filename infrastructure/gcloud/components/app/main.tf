@@ -3,17 +3,6 @@ resource "google_service_account" "task_list_service_identity" {
   display_name = "Task List Service Account"
 }
 
-resource "google_artifact_registry_repository" "task_list_repository" {
-  location      = var.gcp_region
-  repository_id = "task-list"
-  description   = "Task List Application Docker Repository"
-  format        = "DOCKER"
-
-  docker_config {
-    immutable_tags = true
-  }
-}
-
 resource "google_artifact_registry_repository_iam_binding" "task_list_repository_binding" {
   project    = var.gcp_project_id
   location   = var.gcp_region
@@ -22,15 +11,6 @@ resource "google_artifact_registry_repository_iam_binding" "task_list_repository
   members = [
     "serviceAccount:${google_service_account.task_list_service_identity.email}"
   ]
-}
-
-resource "google_artifact_registry_repository_iam_member" "task_list_repository_github_actions_writer" {
-  count      = var.github_actions_service_account_email == null ? 0 : 1
-  project    = var.gcp_project_id
-  location   = var.gcp_region
-  repository = google_artifact_registry_repository.task_list_repository.name
-  role       = "roles/artifactregistry.writer"
-  member     = "serviceAccount:${var.github_actions_service_account_email}"
 }
 
 # Allow Cloud Run service account to attach to VPC resources (required for direct VPC egress)
