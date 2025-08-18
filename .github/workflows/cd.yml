@@ -49,8 +49,8 @@ jobs:
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: snyk test
-        
+        run: snyk test --all-sub-projects
+
       - name: Set up Python 3.13
         uses: actions/setup-python@v5
         with:
