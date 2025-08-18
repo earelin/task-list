@@ -120,6 +120,7 @@ jobs:
         name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
+          create_credentials_file: true
           credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
 
       - name: Set up gcloud SDK
@@ -136,7 +137,6 @@ jobs:
           IMAGE_TAG="$SHORT_SHA"
           FULL_IMAGE_PATH="$GCP_REGION-docker.pkg.dev/$GCP_PROJECT_ID/$AR_REPOSITORY_ID/$IMAGE_NAME:$IMAGE_TAG"
           echo "Publishing image $FULL_IMAGE_PATH"
-          gcloud auth application-default login --quiet
           gcloud auth configure-docker "$GCP_REGION-docker.pkg.dev"
           docker build -t "$FULL_IMAGE_PATH" -f app/Dockerfile app
           docker push "$FULL_IMAGE_PATH"
