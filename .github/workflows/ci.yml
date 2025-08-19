@@ -45,7 +45,7 @@ jobs:
       - name: Build image
         uses: docker/build-push-action@v6
         with:
-          context: ./app          
+          context: ./app
           push: false
           tags: task-list:${{ github.sha }}
 
@@ -55,10 +55,10 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
-          snyk test --all-sub-projects --dev --sarif --sarif-file-output=build/reports/snyk/general.sarif || true
-          snyk code test --all-projects --dev --sarif --sarif-file-output=build/reports/snyk/code.sarif || true
-          snyk container test --sarif --sarif-file-output=build/reports/snyk/container.sarif task-list:${{ github.sha }} || true
-          snyk iac test --sarif --sarif-file-output=build/reports/snyk/iac.sarif infrastructure || true
+          snyk test --all-sub-projects --dev --sarif-file-output=build/reports/snyk/general.sarif || true
+          snyk code test --all-projects --dev --sarif-file-output=build/reports/snyk/code.sarif || true
+          snyk container test --file=app/Dockerfile --sarif-file-output=build/reports/snyk/container.sarif task-list:${{ github.sha }} || true
+          snyk iac test --sarif-file-output=build/reports/snyk/iac.sarif infrastructure || true
 
       - name: Set up Python 3.13
         uses: actions/setup-python@v5
