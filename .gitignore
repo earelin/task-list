@@ -46,3 +46,6 @@ build/
 
 # GitHub Actions
 gha-creds-*.json
+
+# Snyk
+.dccache

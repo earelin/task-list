@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21.0.7_6-jdk AS builder
+FROM eclipse-temurin:21.0.8_9-jdk-alpine-3.22 AS builder
 
 WORKDIR /application
 
@@ -9,10 +9,10 @@ RUN java -Djarmode=layertools -jar application.jar extract \
     && rm application.jar
 
 
-FROM eclipse-temurin:21.0.7_6-jre AS runtime
+FROM eclipse-temurin:21.0.8_9-jre-alpine-3.22 AS runtime
 
-RUN addgroup --system app \
-    && adduser --system --ingroup app app
+RUN addgroup -S app \
+    && adduser -S -G app app
 
 WORKDIR /application
 
