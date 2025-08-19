@@ -118,6 +118,24 @@ jobs:
           output_file_path: build/reports/checkov/terraform.sarif
           soft_fail: true
 
+      - name: Merge SARIF files
+        run: |
+          set -euo pipefail
+          mkdir -p build/reports
+          sarif_files=()
+          for dir in build/reports/snyk build/reports/checkov; do
+            if [ -d "$dir" ]; then
+              while IFS= read -r -d '' f; do sarif_files+=("$f"); done < <(find "$dir" -maxdepth 1 -type f -name '*.sarif' -print0)
+            fi
+          done
+          if [ ${#sarif_files[@]} -eq 0 ]; then
+            echo 'No SARIF files found; creating empty SARIF.'
+            printf '{"$schema":"https://json.schemastore.org/sarif-2.1.0","version":"2.1.0","runs":[]}' > build/reports/merged.sarif
+          else
+            echo "Merging ${#sarif_files[@]} SARIF files"
+            jq -s '{ "$schema": "https://json.schemastore.org/sarif-2.1.0", "version": "2.1.0", "runs": map(.runs // []) | add }' "${sarif_files[@]}" > build/reports/merged.sarif
+          fi
+
       - name: SonarQube analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
