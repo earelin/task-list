@@ -90,8 +90,6 @@ jobs:
           file: app/Dockerfile
           framework: dockerfile
           quiet: true
-          output_format: sarif
-          output_file_path: build/reports/checkov/dockerfile.sarif
           soft_fail: true
 
       - name: Lint pipelines
@@ -102,8 +100,6 @@ jobs:
           download_external_modules: true
           framework: github_actions
           quiet: true
-          output_format: sarif
-          output_file_path: build/reports/checkov/pipelines.sarif
           soft_fail: true
 
       - name: Lint terraform files
@@ -114,8 +110,6 @@ jobs:
           download_external_modules: true
           framework: terraform
           quiet: true
-          output_format: sarif
-          output_file_path: build/reports/checkov/terraform.sarif
           soft_fail: true
 
       - name: SonarQube analysis
