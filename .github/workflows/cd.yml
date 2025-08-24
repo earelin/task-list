@@ -127,7 +127,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
-          name: earelin/task-list
+          name: task-list
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
