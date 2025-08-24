@@ -38,7 +38,6 @@ dependencies {
     implementation("org.mapstruct:mapstruct:${mapstructVersion}")
     implementation("org.mapstruct.extensions.spring:mapstruct-spring-annotations:${mapstructSpringExtensionsVersion}")
 
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("com.github.ben-manes.caffeine:caffeine:${caffeineVersion}")
@@ -47,21 +46,30 @@ dependencies {
     implementation("io.micrometer:micrometer-tracing-bridge-otel")
     implementation("io.opentelemetry:opentelemetry-exporter-otlp")
 
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
 
     implementation("com.google.cloud:spring-cloud-gcp-starter-data-firestore")
 
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-jetty")
+    modules {
+        module("org.springframework.boot:spring-boot-starter-tomcat") {
+            replacedBy("org.springframework.boot:spring-boot-starter-jetty")
+        }
+    }
 
     runtimeOnly("ch.qos.logback:logback-classic:${logbackClassicVersion}")
     runtimeOnly("net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoderVersion}")
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 
     "integrationTestImplementation"("io.rest-assured:rest-assured:${restAssuredVersion}")
     "integrationTestImplementation"("io.rest-assured:spring-mock-mvc:${restAssuredVersion}")
+
     "integrationTestImplementation"("org.springframework.security:spring-security-test")
 }
 
