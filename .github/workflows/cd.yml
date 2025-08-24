@@ -135,6 +135,6 @@ jobs:
           context: ./app
           file: ./app/Dockerfile
           push: true
-          tags: ${{ github.sha }}
+          tags: earelin/task-list:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
