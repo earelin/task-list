@@ -9,8 +9,9 @@ This is a multi-module Gradle project using Java 21 and Spring Boot 3.5.0. Key c
 **Development:**
 
 - `./gradlew build` - Build all modules
-- `./gradlew :app:bootRun` - Run the Spring Boot application
-- `./gradlew test` - Run unit tests
+- `./gradlew :app:bootRun` - Run the Spring Boot application (with hot reload via Spring DevTools)
+- `./gradlew test` - Run all unit tests
+- `./gradlew :app:test` - Run unit tests for app module only
 - `./gradlew :app:integrationTest` - Run integration tests
 - `./gradlew cucumber` - Run acceptance tests (Cucumber/Gherkin)
 - `./gradlew gatlingRun` - Run performance tests (Gatling)
@@ -26,9 +27,10 @@ This is a multi-module Gradle project using Java 21 and Spring Boot 3.5.0. Key c
 
 **Docker & Local Development:**
 
-- `docker-compose up -d` - Start service dependencies (Firestore, WireMock)
-- `docker-compose --profile run-app up` - Start app with dependencies
+- `docker-compose up -d` - Start service dependencies (Firestore emulator on port 8100)
+- `docker-compose --profile run-app up --build` - Start app with dependencies
 - `docker-compose --profile observability up` - Start with monitoring stack (Prometheus, Grafana, Jaeger)
+- Firestore emulator runs on port 8100; Spring auto-detects if `SPRING_CLOUD_GCP_FIRESTORE_EMULATOR_ENABLED=true`
 
 ## Architecture Overview
 
@@ -75,7 +77,8 @@ The application follows DDD principles with clear separation:
 **Test Data:**
 
 - Factory classes (TaskFactory, UserFactory) for test data creation
-- Integration tests use embedded MongoDB or testcontainers
+- Integration tests use Firestore emulator (port 8100) or testcontainers
+- Acceptance tests use REST Assured with shared configuration
 
 ## Infrastructure
 
@@ -103,3 +106,16 @@ The application follows DDD principles with clear separation:
 **Security Features:**
 
 - Secure Firestore configuration with authentication
+
+## Development Workflow
+
+**Test-Driven Development:**
+
+Let tests drive development starting with REST endpoints:
+1. Write acceptance test (Cucumber feature) for the REST endpoint
+2. Write integration test for the controller
+3. Implement REST controller and DTOs (using mocks for dependencies)
+4. Implement domain services and entities
+5. Implement infrastructure layer (Firestore adapters, repositories)
+6. Write unit tests for domain logic
+7. Run `./gradlew build` to ensure all checks pass
