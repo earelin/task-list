@@ -39,7 +39,7 @@ jobs:
           restore-keys: ${{ runner.os }}-sonar
 
       - name: Build
-        run: gradle --build-cache --configuration-cache :app:build --info
+        run: gradle --build-cache --configuration-cache build --info
 
       - name: Run docker compose
         uses: hoverkraft-tech/compose-action@v2.2.0
